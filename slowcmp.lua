@@ -1,4 +1,4 @@
-local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+local lazypath = "./lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
   -- bootstrap lazy.nvim
   -- stylua: ignore
@@ -12,13 +12,10 @@ require("lazy").setup({
     version = false, -- last release is way too old
     event = "InsertEnter",
     dependencies = {
-      "hrsh7th/cmp-nvim-lsp",
-      "hrsh7th/cmp-buffer",
       "hrsh7th/cmp-path",
       "saadparwaiz1/cmp_luasnip",
     },
     opts = function()
-      vim.api.nvim_set_hl(0, "CmpGhostText", { link = "Comment", default = true })
       local cmp = require("cmp")
       local defaults = require("cmp.config.default")()
       return {
@@ -47,27 +44,11 @@ require("lazy").setup({
             fallback()
           end,
         }),
-        sources = cmp.config.sources({
-          { name = "nvim_lsp" },
-          { name = "luasnip" },
-          { name = "path" },
-        }, {
-          { name = "buffer" },
-        }),
-        experimental = {
-          ghost_text = {
-            hl_group = "CmpGhostText",
-          },
-        },
+        sources = cmp.config.sources(
+          { name = "path" }
+        ),
         sorting = defaults.sorting,
       }
-    end,
-    ---@param opts cmp.ConfigSchema
-    config = function(_, opts)
-      for _, source in ipairs(opts.sources) do
-        source.group_index = source.group_index or 1
-      end
-      require("cmp").setup(opts)
     end,
   }
 })
